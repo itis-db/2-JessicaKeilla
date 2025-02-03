@@ -54,19 +54,17 @@ ALTER TABLE Order_Items ADD FOREIGN KEY (order_id) REFERENCES Orders(user_id, or
 ALTER TABLE Order_Items ADD FOREIGN KEY (product_id) REFERENCES Products(name) ON DELETE CASCADE;
 COMMIT;
 
-======================================================
+-- ======================================================
 --v3.version.sql
-===================================================
+-- ===================================================
   BEGIN;
 
-  -- Удаляем суррогатные ключи
 ALTER TABLE orders DROP COLUMN id;
 ALTER TABLE payments DROP COLUMN id;
 ALTER TABLE products DROP COLUMN id;
 ALTER TABLE shipments DROP COLUMN id;
 ALTER TABLE users DROP COLUMN id;
 
--- Добавляем уникальные ограничения на существующие поля для создания доменных ключей
 ALTER TABLE users ADD CONSTRAINT users_email_key UNIQUE (email);
 ALTER TABLE users ADD PRIMARY KEY (email);
 
@@ -74,13 +72,13 @@ ALTER TABLE orders ADD CONSTRAINT orders_user_id_key UNIQUE (user_id);
 ALTER TABLE payments ADD CONSTRAINT payments_user_id_key UNIQUE (user_id);
 ALTER TABLE shipments ADD CONSTRAINT shipments_order_id_key UNIQUE (order_id);
 
--- Обновляем таблицы, чтобы использовать новые ключи
+
 ALTER TABLE orders ADD COLUMN order_id VARCHAR(255) PRIMARY KEY;
 ALTER TABLE payments ADD COLUMN payment_id VARCHAR(255) PRIMARY KEY;
 ALTER TABLE products ADD COLUMN product_id VARCHAR(255) PRIMARY KEY;
 ALTER TABLE shipments ADD COLUMN shipment_id VARCHAR(255) PRIMARY KEY;
 
--- Обновляем связи
+
 ALTER TABLE orders ADD CONSTRAINT fk_orders_users FOREIGN KEY (user_id) REFERENCES users(email);
 ALTER TABLE payments ADD CONSTRAINT fk_payments_users FOREIGN KEY (user_id) REFERENCES users(email);
 ALTER TABLE shipments ADD CONSTRAINT fk_shipments_orders FOREIGN KEY (order_id) REFERENCES orders(order_id);
